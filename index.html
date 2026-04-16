@@ -212,6 +212,15 @@
       cursor: pointer;
       flex-direction: column;
       gap: 5px;
+      background: transparent !important;
+      background-color: transparent !important;
+      border: none !important;
+      outline: none !important;
+      padding: 8px;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      box-shadow: none !important;
     }
 
     .nav-toggle span {
@@ -221,6 +230,18 @@
       background: var(--text);
       border-radius: 2px;
       transition: all 0.3s;
+    }
+
+    .nav-toggle.active span:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .nav-toggle.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .nav-toggle.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(5px, -5px);
     }
 
     /* ── HERO ── */
@@ -1065,26 +1086,48 @@
       .nav-links {
         display: none;
         flex-direction: column;
-        gap: 0;
-        position: fixed;
+        position: absolute;
         top: 72px;
         left: 0;
-        right: 0;
-        background: var(--dark2);
-        padding: 1rem 0;
+        width: 100%;
+        background: rgba(7, 11, 20, 0.97);
+        backdrop-filter: blur(20px);
+        padding: 1.5rem 0;
         border-bottom: 1px solid var(--glass-border);
+        transform: none;
+        gap: 0;
+        text-align: center;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
       }
 
       .nav-links.open {
-        display: flex;
+        display: flex !important;
+      }
+
+      .nav-links li a {
+        display: block;
+        padding: 0.85rem 2rem;
+        font-size: 0.95rem;
+      }
+
+      .nav-links li a:hover {
+        background: rgba(0, 212, 255, 0.06);
       }
 
       .nav-links li {
-        padding: 0.75rem 5%;
+        padding: 1rem 0;
       }
 
       .nav-toggle {
         display: flex;
+        background: transparent !important;
+        background-color: transparent !important;
+        border: none !important;
+        outline: none !important;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        box-shadow: none !important;
       }
 
       .form-row {
@@ -1139,9 +1182,9 @@
       </button>
     </div>
 
-    <button class="nav-toggle" id="nav-toggle" aria-label="Menú">
+    <div class="nav-toggle" id="nav-toggle" role="button" aria-label="Menú" tabindex="0">
       <span></span><span></span><span></span>
-    </button>
+    </div>
   </nav>
 
   <!-- HERO -->
@@ -1708,6 +1751,23 @@
         }
       });
     }
+
+    // ── Mobile nav toggle ──
+    const navToggle = document.getElementById('nav-toggle');
+    const navLinks = document.getElementById('nav-links');
+
+    navToggle.addEventListener('click', () => {
+      navLinks.classList.toggle('open');
+      navToggle.classList.toggle('active');
+    });
+
+    // Close menu when a link is clicked
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.classList.remove('open');
+        navToggle.classList.remove('active');
+      });
+    });
   </script>
 </body>
 
