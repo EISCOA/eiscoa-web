@@ -1,0 +1,80 @@
+import requests
+from bs4 import BeautifulSoup
+import re
+import os
+
+def update_news():
+    url = "https://www.technologyreview.es/ia"
+    response = requests.get(url)
+    if response.status_code != 200:
+        print("Error al acceder a la web de noticias")
+        return
+
+    soup = BeautifulSoup(response.text, 'html.parser')
+    articles = soup.select('article')[:3] # Cogemos los 3 primeros
+
+    news_data = []
+    for art in articles:
+        title_tag = art.select_one('h2') or art.select_one('h3')
+        link_tag = art.select_one('a')
+        
+        if title_tag and link_tag:
+            title = title_tag.get_text().strip()
+            link = link_tag['href']
+            if not link.startswith('http'):
+                link = "https://technologyreview.es" + link
+            
+            # Buscamos una palabra clave para la imagen
+            keyword = title.split()[0].lower() if len(title.split()) > 0 else "ai"
+            img_url = f"https://images.unsplash.com/featured/?ai,{keyword}"
+            
+            news_data.append({
+                "title": title,
+                "link": link,
+                "img": img_url
+            })
+
+    if len(news_data) < 3:
+        print("No se encontraron suficientes noticias")
+        return
+
+    # Leer el archivo index.html
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+
+    # 1. Actualizar el News Grid en el HTML
+    # Buscamos el bloque <div class="news-grid">...</div>
+    new_grid_html = '    <div class="news-grid">\n'
+    for i, item in enumerate(news_data):
+        new_grid_html += f'''      <a class="news-card reveal" href="{item['link']}" target="_blank" rel="noopener noreferrer">
+        <img class="news-img" src="{item['img']}"
+          alt="{item['title']}" />
+        <div class="news-body">
+          <div class="news-tag" data-i18n="n{i+1}.tag">IA · Actualidad</div>
+          <div class="news-title" data-i18n="n{i+1}.title">{item['title']}</div>
+        </div>
+      </a>\n'''
+    new_grid_html += '    </div>'
+
+    content = re.sub(r'<div class="news-grid">.*?<\/div>', new_grid_html, content, flags=re.DOTALL)
+
+    # 2. Actualizar el objeto de traducciones (Español)
+    for i, item in enumerate(news_data):
+        # Actualizar nX.title en español
+        pattern = rf"'n{i+1}\.title': '.*?'"
+        replacement = f"'n{i+1}.title': '{item['title']}'"
+        content = re.sub(pattern, replacement, content)
+        
+        # También actualizamos el tag a algo genérico
+        pattern_tag = rf"'n{i+1}\.tag': '.*?'"
+        replacement_tag = f"'n{i+1}.tag': 'IA · Actualidad'"
+        content = re.sub(pattern_tag, replacement_tag, content)
+
+    # Guardar los cambios
+    with open('index.html', 'w', encoding='utf-8') as f:
+        f.write(content)
+    
+    print("¡Web actualizada con éxito!")
+
+if __name__ == "__main__":
+    update_news()
