@@ -4,8 +4,8 @@ import re
 import os
 
 def update_news():
-    # Usamos la URL sin www para evitar problemas de resolución de nombres
-    url = "https://technologyreview.es/ia"
+    # Usamos la URL correcta del dominio global en español
+    url = "https://es.technologyreview.com/ia"
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
     }
@@ -40,7 +40,7 @@ def update_news():
 
             link = link_tag['href']
             if not link.startswith('http'):
-                link = "https://technologyreview.es" + link
+                link = "https://es.technologyreview.com" + link
             
             # Palabra clave para la imagen (limpiamos un poco el título)
             keyword = re.sub(r'[^\w\s]', '', title).split()[0].lower() if len(title.split()) > 0 else "technology"
