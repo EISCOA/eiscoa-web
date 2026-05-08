@@ -1,0 +1,24 @@
+name: Deploy to Dinahosting
+
+on:
+  push:
+    branches:
+      - main  # Cambia esto por 'master' si tu rama principal se llama master
+
+jobs:
+  web-deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: 🚚 Get latest code
+      uses: actions/checkout@v4
+
+    - name: 📂 Sync files
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        # Aquí abajo debes poner la carpeta donde van los archivos web en Dinahosting. 
+        # Suele ser /www/ o /public/ o /public_html/. Si tu FTP entra directo a la web, pon /
+        server-dir: /www/
