@@ -64,7 +64,7 @@ def update_news():
     # Re-escribir el grid completo es más seguro
     new_grid_html = '    <div class="news-grid">\n'
     # Map of images (para mantener las que generamos)
-    imgs = ["news_llm_debug.png", "news_deepseek_v4.png", "news_ai_data_value.png"]
+    imgs = ["news_llm_debug_v2.png", "news_deepseek_v4.png", "news_ai_data_value.png"]
     tags = ["IA · Desarrollo", "IA · Eficiencia", "IA · Empresa"]
     
     for i, item in enumerate(news_data):
