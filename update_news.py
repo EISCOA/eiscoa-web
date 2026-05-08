@@ -4,14 +4,22 @@ import re
 import os
 
 def update_news():
-    url = "https://www.technologyreview.es/ia"
-    response = requests.get(url)
-    if response.status_code != 200:
-        print("Error al acceder a la web de noticias")
+    # Usamos la URL sin www para evitar problemas de resolución de nombres
+    url = "https://technologyreview.es/ia"
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+    }
+    
+    try:
+        response = requests.get(url, headers=headers, timeout=15)
+        response.raise_for_status()
+    except Exception as e:
+        print(f"Error al acceder a la web: {e}")
         return
 
     soup = BeautifulSoup(response.text, 'html.parser')
-    articles = soup.select('article')[:3] # Cogemos los 3 primeros
+    # Ajustamos el selector para que sea más flexible
+    articles = soup.find_all('article')[:3]
 
     news_data = []
     for art in articles:
