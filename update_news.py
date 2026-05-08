@@ -18,23 +18,33 @@ def update_news():
         return
 
     soup = BeautifulSoup(response.text, 'html.parser')
-    # Ajustamos el selector para que sea más flexible
-    articles = soup.find_all('article')[:3]
+    # Escaneamos más artículos para tener de dónde elegir tras filtrar
+    all_articles = soup.find_all('article')[:15]
+
+    # Palabras a evitar para mantener la neutralidad
+    forbidden_keywords = ['musk', 'altman', 'democracia', 'política', 'juicio', 'voto', 'elecciones', 'trump', 'biden']
 
     news_data = []
-    for art in articles:
+    for art in all_articles:
+        if len(news_data) >= 3:
+            break
+            
         title_tag = art.select_one('h2') or art.select_one('h3')
         link_tag = art.select_one('a')
         
         if title_tag and link_tag:
             title = title_tag.get_text().strip()
+            # Filtro de neutralidad: si contiene alguna palabra prohibida, saltamos la noticia
+            if any(word in title.lower() for word in forbidden_keywords):
+                continue
+
             link = link_tag['href']
             if not link.startswith('http'):
                 link = "https://technologyreview.es" + link
             
-            # Buscamos una palabra clave para la imagen
-            keyword = title.split()[0].lower() if len(title.split()) > 0 else "ai"
-            img_url = f"https://images.unsplash.com/featured/?ai,{keyword}"
+            # Palabra clave para la imagen (limpiamos un poco el título)
+            keyword = re.sub(r'[^\w\s]', '', title).split()[0].lower() if len(title.split()) > 0 else "technology"
+            img_url = f"https://images.unsplash.com/featured/?technology,{keyword}"
             
             news_data.append({
                 "title": title,
