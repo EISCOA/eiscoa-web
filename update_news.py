@@ -20,35 +20,54 @@ def update_news():
 
     soup = BeautifulSoup(response.text, 'html.parser')
     # MIT Technology Review usa h3 para los títulos de los artículos en la lista
-    articles = soup.find_all('article')
-    if not articles:
-        # Intento alternativo si la estructura cambia
-        articles = soup.select('div.views-row')
-
     forbidden_keywords = ['musk', 'altman', 'política', 'democracia', 'juicio', 'trump', 'biden', 'ley', 'regulación', 'tribunales', 'demanda']
 
     news_data = []
-    # En la versión simplificada de la web, buscamos los H3 y sus enlaces
-    for item in soup.find_all('h3'):
+    # Buscamos en los contenedores de artículos para mayor precisión
+    articles = soup.find_all('article')
+    if not articles:
+        articles = soup.select('div.views-row')
+
+    for art in articles:
         if len(news_data) >= 3:
             break
             
-        title = item.get_text().strip()
-        link_tag = item.find_parent('a') or item.find('a')
+        h3 = art.find('h3')
+        if not h3:
+            continue
+            
+        title = h3.get_text().strip()
         
-        if link_tag and 'href' in link_tag.attrs:
-            link = link_tag['href']
-            if not link.startswith('http'):
-                link = "https://technologyreview.es" + link
+        # El enlace puede ser el padre del h3, un hijo, o estar en el mismo article
+        link_tag = art.find('a', href=True)
+        if not link_tag:
+            continue
             
-            # Filtro de neutralidad
-            if any(word in title.lower() for word in forbidden_keywords):
-                continue
-            
-            news_data.append({
-                "title": title,
-                "link": link
-            })
+        link = link_tag['href']
+        if not link.startswith('http'):
+            link = "https://technologyreview.es" + link
+        
+        # Filtro de neutralidad
+        if any(word in title.lower() for word in forbidden_keywords):
+            continue
+        
+        news_data.append({
+            "title": title,
+            "link": link
+        })
+
+    if not news_data:
+        # Si fallan los artículos, intentamos el método original por si acaso
+        for item in soup.find_all('h3'):
+            if len(news_data) >= 3:
+                break
+            title = item.get_text().strip()
+            link_tag = item.find_parent('a') or item.find('a')
+            if link_tag and 'href' in link_tag.attrs:
+                link = link_tag['href']
+                if not link.startswith('http'): link = "https://technologyreview.es" + link
+                if any(word in title.lower() for word in forbidden_keywords): continue
+                news_data.append({"title": title, "link": link})
 
     if not news_data:
         print("No se encontraron noticias válidas")
