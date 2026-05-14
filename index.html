@@ -1394,7 +1394,7 @@
         <div class="form-title" data-i18n="form.title">Completa el formulario</div>
         <div class="form-sub" data-i18n="form.sub">Te respondemos en menos de 24 horas.</div>
 
-        <form id="contact-form" action="https://formsubmit.co/soporte@eiscoa.com" method="POST">
+        <form id="contact-form" onsubmit="handleForm(event)">
           <div class="form-row">
             <div class="form-group">
               <label for="empresa" data-i18n="form.company">Empresa</label>
@@ -1412,9 +1412,8 @@
               required />
           </div>
           <div class="form-group">
-            <input type="hidden" name="_subject" value="Nuevo contacto desde la web de EISCOA">
-            <input type="hidden" name="_template" value="table">
-            <input type="hidden" name="_captcha" value="false">
+            <input type="hidden" name="access_key" value="7992da6b-fa89-4a5b-bb03-f5930cf72194">
+            <input type="hidden" name="subject" value="Nuevo contacto desde la web de EISCOA">
           </div>
           <div class="form-group">
             <label for="mensaje" data-i18n="form.message">¿Qué necesitas?</label>
@@ -1563,9 +1562,46 @@
     drawParticles();
 
     // ── Form ──
-    // The form uses standard HTML POST to formsubmit.co
+    function handleForm(e) {
+      e.preventDefault();
+      const form = e.target;
+      const btn = form.querySelector('.form-submit');
+      const isEs = currentLang === 'es';
+      
+      btn.textContent = isEs ? 'Enviando...' : 'Sending...';
+      const formData = new FormData(form);
 
-    // ── Language switcher ──
+      fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json'
+        },
+        body: formData
+      })
+      .then(async response => {
+        const data = await response.json();
+        if (data.success) {
+          btn.textContent = isEs ? '✅ ¡Mensaje enviado!' : '✅ Message sent!';
+          btn.style.background = 'linear-gradient(135deg,#00c853,#00897b)';
+          setTimeout(() => {
+            btn.textContent = translations[currentLang]['form.submit'];
+            btn.style.background = '';
+            form.reset();
+          }, 3000);
+        } else {
+          throw new Error(data.message || 'Error');
+        }
+      })
+      .catch(error => {
+        btn.textContent = isEs ? '❌ Error al enviar' : '❌ Error sending';
+        btn.style.background = 'linear-gradient(135deg,#d32f2f,#c62828)';
+        console.error(error);
+        setTimeout(() => {
+          btn.textContent = translations[currentLang]['form.submit'];
+          btn.style.background = '';
+        }, 3000);
+      });
+    }
     let currentLang = 'es';
 
     const translations = {
