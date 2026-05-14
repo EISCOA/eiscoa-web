@@ -1337,28 +1337,34 @@
     </div>
 
     <div class="news-grid">
-      <a class="news-card reveal" href="https://technologyreview.es/article/la-nueva-herramienta-de-interpretabilidad-mecanicista-de-esta-startup-permite-depurar-los-llm" target="_blank" rel="noopener noreferrer">
-        <img class="news-img" src="news_llm_debug_v2.png"
-          alt="Depuración de LLM" />
+      <a class="news-card reveal"
+        href="https://technologyreview.es/article/la-nueva-herramienta-de-interpretabilidad-mecanicista-de-esta-startup-permite-depurar-los-llm"
+        target="_blank" rel="noopener noreferrer">
+        <img class="news-img" src="news_llm_debug_v2.png" alt="Depuración de LLM" />
         <div class="news-body">
           <div class="news-tag" data-i18n="n1.tag">IA · Desarrollo</div>
-          <div class="news-title" data-i18n="n1.title">Una nueva herramienta de interpretabilidad mecanicista permite depurar los LLM</div>
+          <div class="news-title" data-i18n="n1.title">Una nueva herramienta de interpretabilidad mecanicista permite
+            depurar los LLM</div>
         </div>
       </a>
-      <a class="news-card reveal" href="https://technologyreview.es/article/el-paso-que-falta-entre-el-hype-y-el-beneficio" target="_blank" rel="noopener noreferrer">
-        <img class="news-img" src="news_ai_efficiency.png"
-          alt="Beneficio IA" />
+      <a class="news-card reveal"
+        href="https://technologyreview.es/article/el-paso-que-falta-entre-el-hype-y-el-beneficio" target="_blank"
+        rel="noopener noreferrer">
+        <img class="news-img" src="news_ai_efficiency.png" alt="Beneficio IA" />
         <div class="news-body">
           <div class="news-tag" data-i18n="n2.tag">IA · Negocio</div>
-          <div class="news-title" data-i18n="n2.title">El paso que falta entre el hype y el beneficio real de la IA</div>
+          <div class="news-title" data-i18n="n2.title">El paso que falta entre el hype y el beneficio real de la IA
+          </div>
         </div>
       </a>
-      <a class="news-card reveal" href="https://technologyreview.es/article/tres-razones-por-las-que-el-nuevo-modelo-v4-de-deepseek-importa" target="_blank" rel="noopener noreferrer">
-        <img class="news-img" src="news_deepseek_v4.png"
-          alt="DeepSeek V4" />
+      <a class="news-card reveal"
+        href="https://technologyreview.es/article/tres-razones-por-las-que-el-nuevo-modelo-v4-de-deepseek-importa"
+        target="_blank" rel="noopener noreferrer">
+        <img class="news-img" src="news_deepseek_v4.png" alt="DeepSeek V4" />
         <div class="news-body">
           <div class="news-tag" data-i18n="n3.tag">IA · Innovación</div>
-          <div class="news-title" data-i18n="n3.title">Tres razones por las que el nuevo modelo V4 de DeepSeek importa</div>
+          <div class="news-title" data-i18n="n3.title">Tres razones por las que el nuevo modelo V4 de DeepSeek importa
+          </div>
         </div>
       </a>
     </div>
@@ -1398,8 +1404,8 @@
           <div class="form-row">
             <div class="form-group">
               <label for="empresa" data-i18n="form.company">Empresa</label>
-              <input id="empresa" name="empresa" type="text" data-i18n-placeholder="form.company_ph" placeholder="Tu empresa"
-                required />
+              <input id="empresa" name="empresa" type="text" data-i18n-placeholder="form.company_ph"
+                placeholder="Tu empresa" required />
             </div>
             <div class="form-group">
               <label for="tel" data-i18n="form.phone">Teléfono</label>
@@ -1408,8 +1414,8 @@
           </div>
           <div class="form-group">
             <label for="email">Email</label>
-            <input id="email" name="email" type="email" data-i18n-placeholder="form.email_ph" placeholder="ejemplo@empresa.com"
-              required />
+            <input id="email" name="email" type="email" data-i18n-placeholder="form.email_ph"
+              placeholder="ejemplo@empresa.com" required />
           </div>
           <div class="form-group">
             <input type="hidden" name="access_key" value="7992da6b-fa89-4a5b-bb03-f5930cf72194">
@@ -1417,8 +1423,8 @@
           </div>
           <div class="form-group">
             <label for="mensaje" data-i18n="form.message">¿Qué necesitas?</label>
-            <textarea id="mensaje" name="mensaje" data-i18n-placeholder="form.message_ph" placeholder="Detalla tus necesidades..."
-              required></textarea>
+            <textarea id="mensaje" name="mensaje" data-i18n-placeholder="form.message_ph"
+              placeholder="Detalla tus necesidades..." required></textarea>
           </div>
           <button type="submit" class="form-submit" data-i18n="form.submit">Enviar mensaje →</button>
         </form>
@@ -1567,40 +1573,40 @@
       const form = e.target;
       const btn = form.querySelector('.form-submit');
       const isEs = currentLang === 'es';
-      
+
       btn.textContent = isEs ? 'Enviando...' : 'Sending...';
       const formData = new FormData(form);
 
       fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: {
-            'Accept': 'application/json'
+          'Accept': 'application/json'
         },
         body: formData
       })
-      .then(async response => {
-        const data = await response.json();
-        if (data.success) {
-          btn.textContent = isEs ? '✅ ¡Mensaje enviado!' : '✅ Message sent!';
-          btn.style.background = 'linear-gradient(135deg,#00c853,#00897b)';
+        .then(async response => {
+          const data = await response.json();
+          if (data.success) {
+            btn.textContent = isEs ? '✅ ¡Mensaje enviado!' : '✅ Message sent!';
+            btn.style.background = 'linear-gradient(135deg,#00c853,#00897b)';
+            setTimeout(() => {
+              btn.textContent = translations[currentLang]['form.submit'];
+              btn.style.background = '';
+              form.reset();
+            }, 3000);
+          } else {
+            throw new Error(data.message || 'Error');
+          }
+        })
+        .catch(error => {
+          btn.textContent = isEs ? '❌ Error al enviar' : '❌ Error sending';
+          btn.style.background = 'linear-gradient(135deg,#d32f2f,#c62828)';
+          console.error(error);
           setTimeout(() => {
             btn.textContent = translations[currentLang]['form.submit'];
             btn.style.background = '';
-            form.reset();
           }, 3000);
-        } else {
-          throw new Error(data.message || 'Error');
-        }
-      })
-      .catch(error => {
-        btn.textContent = isEs ? '❌ Error al enviar' : '❌ Error sending';
-        btn.style.background = 'linear-gradient(135deg,#d32f2f,#c62828)';
-        console.error(error);
-        setTimeout(() => {
-          btn.textContent = translations[currentLang]['form.submit'];
-          btn.style.background = '';
-        }, 3000);
-      });
+        });
     }
     let currentLang = 'es';
 
