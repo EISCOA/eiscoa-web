@@ -1394,7 +1394,7 @@
         <div class="form-title" data-i18n="form.title">Completa el formulario</div>
         <div class="form-sub" data-i18n="form.sub">Te respondemos en menos de 24 horas.</div>
 
-        <form id="contact-form" onsubmit="handleForm(event)">
+        <form id="contact-form" action="https://formsubmit.co/soporte@eiscoa.com" method="POST">
           <div class="form-row">
             <div class="form-group">
               <label for="empresa" data-i18n="form.company">Empresa</label>
@@ -1563,41 +1563,7 @@
     drawParticles();
 
     // ── Form ──
-    function handleForm(e) {
-      e.preventDefault();
-      const form = e.target;
-      const btn = form.querySelector('.form-submit');
-      const isEs = currentLang === 'es';
-      
-      btn.textContent = isEs ? 'Enviando...' : 'Sending...';
-      const formData = new FormData(form);
-
-      fetch('https://formsubmit.co/ajax/soporte@eiscoa.com', {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json'
-        },
-        body: formData
-      })
-      .then(response => response.json())
-      .then(data => {
-        btn.textContent = isEs ? '✅ ¡Mensaje enviado!' : '✅ Message sent!';
-        btn.style.background = 'linear-gradient(135deg,#00c853,#00897b)';
-        setTimeout(() => {
-          btn.textContent = translations[currentLang]['form.submit'];
-          btn.style.background = '';
-          form.reset();
-        }, 3000);
-      })
-      .catch(error => {
-        btn.textContent = isEs ? '❌ Error al enviar' : '❌ Error sending';
-        btn.style.background = 'linear-gradient(135deg,#d32f2f,#c62828)';
-        setTimeout(() => {
-          btn.textContent = translations[currentLang]['form.submit'];
-          btn.style.background = '';
-        }, 3000);
-      });
-    }
+    // The form uses standard HTML POST to formsubmit.co
 
     // ── Language switcher ──
     let currentLang = 'es';
